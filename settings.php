@@ -58,6 +58,12 @@ if ($ADMIN->fulltree) {
         get_string('activarglobal_help', 'enrol_notificationeabc'),
         '')
     );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/enrolsubject',
+        get_string('enrolsubject', 'enrol_notificationeabc'),
+        get_string('enrolsubject_help', 'enrol_notificationeabc'),
+        get_string('subject', 'enrol_notificationeabc'))
+    );
     $settings->add(new admin_setting_confightmleditor(
         'enrol_notificationeabc/location',
         get_string('location', 'enrol_notificationeabc'),
@@ -85,6 +91,12 @@ if ($ADMIN->fulltree) {
         get_string('activarglobalunenrolalert_help', 'enrol_notificationeabc'),
         '')
     );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/unenrolsubject',
+        get_string('unenrolsubject', 'enrol_notificationeabc'),
+        get_string('unenrolsubject_help', 'enrol_notificationeabc'),
+        get_string('subject', 'enrol_notificationeabc'))
+    );
     $settings->add(new admin_setting_confightmleditor(
         'enrol_notificationeabc/unenrolmessage',
         get_string('unenrolmessage', 'enrol_notificationeabc'),
@@ -111,6 +123,12 @@ if ($ADMIN->fulltree) {
         get_string('activarglobalenrolupdated', 'enrol_notificationeabc'),
         get_string('activarglobalenrolupdated_help', 'enrol_notificationeabc'),
         '')
+    );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/updatedenrolsubject',
+        get_string('updatedenrolsubject', 'enrol_notificationeabc'),
+        get_string('updatedenrolsubject_help', 'enrol_notificationeabc'),
+        get_string('subject', 'enrol_notificationeabc'))
     );
     $settings->add(new admin_setting_confightmleditor(
         'enrol_notificationeabc/updatedenrolmessage',
