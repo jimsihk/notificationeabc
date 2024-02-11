@@ -78,13 +78,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext1, $user, $course);
                     } else {
-                        $mensaje = $this->process_mensaje($this->get_config('filelockedmail'), $user, $course);
+                        $mensaje = $this->process_mensaje(get_string('filelockedmail', 'enrol_notificationeabc'), $user, $course);
                     }
 
                 } else if (!empty($activeglobalenrol) && !empty($plainmensajeenrol)) {
                     $mensaje = $this->process_mensaje($mensajeenrol, $user, $course);
                 } else {
-                    $mensaje = $this->process_mensaje($this->get_config('filelockedmail'), $user, $course);
+                    $mensaje = $this->process_mensaje(get_string('filelockedmail', 'enrol_notificationeabc'), $user, $course);
                 }
                 
                 if (!empty($enrolsubject)) {
@@ -100,13 +100,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext2, $user, $course);
                     } else {
-                        $mensaje = $this->process_mensaje($this->get_config('unenrolmessagedefault'), $user, $course);
+                        $mensaje = $this->process_mensaje(get_string('unenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
                     }
 
                 } else if (!empty($activarglobalunenrolalert) && !empty($plainmensajeunenrol)) {
                     $mensaje = $this->process_mensaje($mensajeunenrol, $user, $course);
                 } else {
-                    $mensaje = $this->process_mensaje($this->get_config('unenrolmessagedefault'), $user, $course);
+                    $mensaje = $this->process_mensaje(get_string('unenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
                 }
                 
                 if (!empty($unenrolsubject)) {
@@ -122,13 +122,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext3, $user, $course);
                     } else {
-                        $mensaje = $this->process_mensaje($this->get_config('updatedenrolmessagedefault'), $user, $course);
+                        $mensaje = $this->process_mensaje(get_string('updatedenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
                     }
 
                 } else if (!empty($activarglobalenrolupdated) && !empty($plainmensajeupdateenrol)) {
                     $mensaje = $this->process_mensaje($mensajeupdateenrol, $user, $course);
                 } else {
-                    $mensaje = $this->process_mensaje($this->get_config('updatedenrolmessagedefault'), $user, $course);
+                    $mensaje = $this->process_mensaje(get_string('updatedenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
                 }
                 
                 if (!empty($updatedenrolsubject)) {
@@ -199,9 +199,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $m = str_replace('{COURSENAME}', $course->fullname, $m);
         $m = str_replace('{USERNAME}', $user->username, $m);
         $m = str_replace('{NOMBRE}', $user->firstname, $m);
-        $m = str_replace('{FIRSTNAME}', $user->firstname, $m); // Supports also EN placeholder name
         $m = str_replace('{APELLIDO}', $user->lastname, $m);
-        $m = str_replace('{LASTNAME}', $user->lastname, $m); // Supports also EN placeholder name
         $m = str_replace('{URL}', $url, $m);
         return $m;
     }
@@ -242,9 +240,6 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $fields['customint5'] = $this->get_config('activeenrolupdatedalert');
         $fields['customchar1'] = $this->get_config('emailsender');
         $fields['customchar2'] = $this->get_config('namesender');
-        $fields['customsubject1'] = $this->get_config('enrolsubject');
-        $fields['customsubject2'] = $this->get_config('unenrolsubject');
-        $fields['customsubject3'] = $this->get_config('updatedenrolsubject');
 
         return $fields;
     }
