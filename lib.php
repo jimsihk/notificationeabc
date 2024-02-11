@@ -75,13 +75,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext1, $user, $course);
                     } else {
-                        $mensaje = get_string("filelockedmail", "enrol_notificationeabc", $course);
+                        $mensaje = $this->process_mensaje($this->get_config('filelockedmail'), $user, $course);
                     }
 
                 } else if (!empty($activeglobalenrol) && !empty($plainmensajeenrol)) {
                     $mensaje = $this->process_mensaje($mensajeenrol, $user, $course);
                 } else {
-                    $mensaje = get_string("filelockedmail", "enrol_notificationeabc", $course);
+                    $mensaje = $this->process_mensaje($this->get_config('filelockedmail'), $user, $course);
                 }
                 break;
             case 2:
@@ -91,13 +91,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext2, $user, $course);
                     } else {
-                        $mensaje = get_string("unenrolmessagedefault", "enrol_notificationeabc", $course);
+                        $mensaje = $this->process_mensaje($this->get_config('unenrolmessagedefault'), $user, $course);
                     }
 
                 } else if (!empty($activarglobalunenrolalert) && !empty($plainmensajeunenrol)) {
                     $mensaje = $this->process_mensaje($mensajeunenrol, $user, $course);
                 } else {
-                    $mensaje = get_string("unenrolmessagedefault", "enrol_notificationeabc", $course);
+                    $mensaje = $this->process_mensaje($this->get_config('unenrolmessagedefault'), $user, $course);
                 }
                 break;
             case 3:
@@ -107,13 +107,13 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     if (!empty($texto)) {
                         $mensaje = $this->process_mensaje($enrol->customtext3, $user, $course);
                     } else {
-                        $mensaje = get_string("updatedenrolmessagedefault", "enrol_notificationeabc", $course);
+                        $mensaje = $this->process_mensaje($this->get_config('updatedenrolmessagedefault'), $user, $course);
                     }
 
                 } else if (!empty($activarglobalenrolupdated) && !empty($plainmensajeupdateenrol)) {
                     $mensaje = $this->process_mensaje($mensajeupdateenrol, $user, $course);
                 } else {
-                    $mensaje = get_string("updatedenrolmessagedefault", "enrol_notificationeabc", $course);
+                    $mensaje = $this->process_mensaje($this->get_config('updatedenrolmessagedefault'), $user, $course);
                 }
                 break;
 
