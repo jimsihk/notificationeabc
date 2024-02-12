@@ -203,7 +203,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         global $CFG;
         $m = $mensaje;
         $url = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $course->id));
-        $m = str_replace('{COURSENAME}', $course->fullname, $m);
+        $m = str_replace('{COURSENAME}', format_string($course->fullname), $m);
         $m = str_replace('{USERNAME}', $user->username, $m);
         $m = str_replace('{NOMBRE}', $user->firstname, $m);
         $m = str_replace('{FIRSTNAME}', $user->firstname, $m); // Supports also EN placeholder name
