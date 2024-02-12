@@ -66,6 +66,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $plainmensajeunenrol = strip_tags($mensajeunenrol);
         $mensajeupdateenrol = $this->get_config('updatedenrolmessage');
         $plainmensajeupdateenrol = strip_tags($mensajeupdateenrol);
+        $enrolsubject = $this->get_config('enrolsubject');
+        $unenrolsubject = $this->get_config('unenrolsubject');
+        $updatedenrolmessage = $this->get_config('updatedenrolmessage');
 
         switch ((int)$type) {
             case 1:
@@ -83,6 +86,12 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                 } else {
                     $mensaje = $this->process_mensaje(get_string('filelockedmail', 'enrol_notificationeabc'), $user, $course);
                 }
+                
+                if (!empty($enrolsubject)) {
+                    $emailsubject = $this->process_subject($enrolsubject, $user, $course);
+                } else {
+                    $emailsubject = $this->process_subject(get_string('subject', 'enrol_notificationeabc'), $user, $course);
+                }
                 break;
             case 2:
 
@@ -99,6 +108,12 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                 } else {
                     $mensaje = $this->process_mensaje(get_string('unenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
                 }
+                
+                if (!empty($unenrolsubject)) {
+                    $emailsubject = $this->process_subject($unenrolsubject, $user, $course);
+                } else {
+                    $emailsubject = $this->process_subject(get_string('subject', 'enrol_notificationeabc'), $user, $course);
+                }
                 break;
             case 3:
 
@@ -114,6 +129,12 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     $mensaje = $this->process_mensaje($mensajeupdateenrol, $user, $course);
                 } else {
                     $mensaje = $this->process_mensaje(get_string('updatedenrolmessagedefault', 'enrol_notificationeabc'), $user, $course);
+                }
+                
+                if (!empty($updatedenrolsubject)) {
+                    $emailsubject = $this->process_subject($updatedenrolsubject, $user, $course);
+                } else {
+                    $emailsubject = $this->process_subject(get_string('subject', 'enrol_notificationeabc'), $user, $course);
                 }
                 break;
 
@@ -146,7 +167,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $eventdata->name = 'notificationeabc_enrolment';
         $eventdata->userfrom = $sender;
         $eventdata->userto = $user->id;
-        $eventdata->subject = get_string('subject', 'enrol_notificationeabc');
+        $eventdata->subject = $emailsubject;
         $eventdata->fullmessage = '';
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml = $mensaje;
@@ -163,6 +184,28 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         }
     } // End of function.
 
+    // Common function to process placeholders in content
+    /**
+     * Proccess message method
+     * @param String $mensaje el mensaje en bruto
+     * @param stdClass $user instancia usuario
+     * @param stdClass $course instancia curso
+     * @return String el mensaje procesado
+     */
+    public function process_placeholders($mensaje, stdClass $user, stdClass $course) {
+        global $CFG;
+        $m = $mensaje;
+        $url = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $course->id));
+        $m = str_replace('{COURSENAME}', $course->fullname, $m);
+        $m = str_replace('{USERNAME}', $user->username, $m);
+        $m = str_replace('{NOMBRE}', $user->firstname, $m);
+        $m = str_replace('{FIRSTNAME}', $user->firstname, $m); // Supports also EN placeholder name
+        $m = str_replace('{APELLIDO}', $user->lastname, $m);
+        $m = str_replace('{LASTNAME}', $user->lastname, $m); // Supports also EN placeholder name
+        $m = str_replace('{URL}', $url, $m);
+        return $m;
+    }
+
     // Procesa el mensaje para aceptar marcadores.
     /**
      * Proccess message method
@@ -174,14 +217,25 @@ class enrol_notificationeabc_plugin extends enrol_plugin
     public function process_mensaje($mensaje, stdClass $user, stdClass $course) {
         global $CFG;
         $m = $mensaje;
-        $url = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $course->id));
-        $m = str_replace('{COURSENAME}', $course->fullname, $m);
-        $m = str_replace('{USERNAME}', $user->username, $m);
-        $m = str_replace('{NOMBRE}', $user->firstname, $m);
-        $m = str_replace('{FIRSTNAME}', $user->firstname, $m); // Supports also EN placeholder name
-        $m = str_replace('{APELLIDO}', $user->lastname, $m);
-        $m = str_replace('{LASTNAME}', $user->lastname, $m); // Supports also EN placeholder name
-        $m = str_replace('{URL}', $url, $m);
+        $m = $this->process_placeholders($m, $user, $course);
+        $m = format_text($m);
+        return $m;
+    }
+
+
+    // Process email subject
+    /**
+     * Proccess message method
+     * @param String $mensaje el mensaje en bruto
+     * @param stdClass $user instancia usuario
+     * @param stdClass $course instancia curso
+     * @return String el mensaje procesado
+     */
+    public function process_subject($mensaje, stdClass $user, stdClass $course) {
+        global $CFG;
+        $m = $mensaje;
+        $m = $this->process_placeholders($m, $user, $course);
+        $m = format_string($m);
         return $m;
     }
 
@@ -221,6 +275,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $fields['customint5'] = $this->get_config('activeenrolupdatedalert');
         $fields['customchar1'] = $this->get_config('emailsender');
         $fields['customchar2'] = $this->get_config('namesender');
+        $fields['customsubject1'] = $this->get_config('enrolsubject');
+        $fields['customsubject2'] = $this->get_config('unenrolsubject');
+        $fields['customsubject3'] = $this->get_config('updatedenrolsubject');
 
         return $fields;
     }
