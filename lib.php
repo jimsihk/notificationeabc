@@ -52,7 +52,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
      * @return bool
      */
     public function enviarmail(stdClass $user, stdClass $course, $type) {
-        global $CFG, $DB, $COURSE;
+        global $CFG, $DB, $COURSE, $SESSION;
 
         $course->url = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
 
@@ -69,6 +69,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $enrolsubject = $this->get_config('enrolsubject');
         $unenrolsubject = $this->get_config('unenrolsubject');
         $updatedenrolmessage = $this->get_config('updatedenrolmessage');
+
+        // Use language of enrol user
+        $originallang = force_current_language($this->get_email_language($user));
 
         switch ((int)$type) {
             case 1:
@@ -141,6 +144,10 @@ class enrol_notificationeabc_plugin extends enrol_plugin
             default:
                 break;
         }
+
+        // Clear forced language from session
+        force_current_language($originallang);
+        unset($SESSION->forcelang);
 
         $soporte = core_user::get_support_user();
 
@@ -328,6 +335,41 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $icons[] = new pix_icon('email', get_string('pluginname', 'enrol_notificationeabc'), 'enrol_notificationeabc');
         return $icons;
     }
+
+    // Detect the proper email lanugage, taken reference from current_language() in lib/moodlelib.php
+    /**
+     * Returns the code for the current language
+     *
+     * @category string
+     * @return string
+     */
+    function get_email_language(stdClass $user) {
+        global $CFG, $PAGE, $SESSION;
+
+        if (!empty($PAGE->cm->lang)) {
+            // Activity language, if set.
+            $return = $PAGE->cm->lang;
+
+        } else if (!empty($PAGE->course->id) && $PAGE->course->id != SITEID && !empty($PAGE->course->lang)) {
+            // Course language can override all other settings for this page.
+            $return = $PAGE->course->lang;
+
+        } else if (!empty($user->lang)) {
+            $return = $user->lang;
+
+        } else if (isset($CFG->lang)) {
+            $return = $CFG->lang;
+
+        } else {
+            $return = 'en';
+        }
+
+        // Just in case this slipped in from somewhere by accident.
+        $return = str_replace('_utf8', '', $return);
+
+        return $return;
+    }
+
 
 } // End of class.
 
